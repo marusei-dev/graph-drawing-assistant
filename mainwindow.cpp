@@ -1,4 +1,3 @@
-
 #include "mainwindow.h"
 
 
@@ -35,7 +34,15 @@ MainWindow::MainWindow(QWidget *parent)
     dockToolbar->setMaximumWidth(250);
     dockToolbar->setStyleSheet("border-right: 2px solid grey");
 
-    // Adding layout features
+    // Creating the properties dock widget to contain properties of the graph
+    QDockWidget* dockProperties = new QDockWidget("Properties", this);
+    dockProperties->setAllowedAreas(Qt::RightDockWidgetArea);
+    dockProperties->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    dockProperties->setMinimumWidth(250);
+    dockProperties->setMaximumWidth(300);
+    dockProperties->setStyleSheet("border-left: 2px solid grey");
+
+    // Adding layout features for the toolbar dock
     QWidget* toolbarWidget = new QWidget(dockToolbar);
     QVBoxLayout* toolbarVerticalLayout = new QVBoxLayout(toolbarWidget);
     QPushButton* addNodeButton = new QPushButton("Add Node", toolbarWidget);
@@ -45,19 +52,26 @@ MainWindow::MainWindow(QWidget *parent)
     toolbarVerticalLayout->setAlignment(Qt::AlignTop);
     dockToolbar->setWidget(toolbarWidget);
 
+    // Adding layout features for the properties dock
+    QWidget* propertiesWidget = new QWidget(dockProperties);
+    QVBoxLayout* propertiesVerticalLayout = new QVBoxLayout(propertiesWidget);
+    propertiesVerticalLayout->setAlignment(Qt::AlignTop);
+    dockProperties->setWidget(propertiesWidget);
+
     // Adding the dock widget toolbar
     addDockWidget(Qt::LeftDockWidgetArea, dockToolbar);
+    addDockWidget(Qt::RightDockWidgetArea, dockProperties);
 
     // Loading the background picture
     QPixmap backgroundPixmap("C:\\Qt\\Projects\\GraphDrawingAssistant\\src\\dotted-background.png");
     QPalette backgroundPalette;
     backgroundPalette.setBrush(QPalette::Window, backgroundPixmap);
 
-    QWidget* canvasWidget = new QWidget(this);
+    // canvasWidget is the widget of the central area between the two docks
+    CanvasWidget* canvasWidget = new CanvasWidget(this);
     canvasWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     canvasWidget->setAutoFillBackground(true);
     canvasWidget->setPalette(backgroundPalette);
-
 
     // The main layout will allow canvas to take up all space that is not occupied by the dock widget
     QHBoxLayout* mainLayout = new QHBoxLayout();

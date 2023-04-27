@@ -14,6 +14,7 @@
 #include <QImage>
 #include <QPixmap>
 #include <QPalette>
+#include "CanvasWidget.h"
 
 
 
