@@ -16,6 +16,7 @@ class Vertex
     unsigned int outDegree;
     unsigned int inDegree;
 public:
+    Vertex();
     Vertex(string name, Coordinate position, Color color = WHITE, unsigned int inDegree = 0, unsigned int outDegree = 0);
 };
 

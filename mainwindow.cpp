@@ -46,9 +46,11 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget* toolbarWidget = new QWidget(dockToolbar);
     QVBoxLayout* toolbarVerticalLayout = new QVBoxLayout(toolbarWidget);
     QPushButton* addNodeButton = new QPushButton("Add Node", toolbarWidget);
-    QPushButton* addEdgeButton = new QPushButton("Add Edge", toolbarWidget);
+    QPushButton* addUndirectedEdgeButton = new QPushButton("Add Undirected Edge", toolbarWidget);
+    QPushButton* addDirectedEdgeButton = new QPushButton("Add Directed Edge", toolbarWidget);
     toolbarVerticalLayout->addWidget(addNodeButton);
-    toolbarVerticalLayout->addWidget(addEdgeButton);
+    toolbarVerticalLayout->addWidget(addUndirectedEdgeButton);
+    toolbarVerticalLayout->addWidget(addDirectedEdgeButton);
     toolbarVerticalLayout->setAlignment(Qt::AlignTop);
     dockToolbar->setWidget(toolbarWidget);
 
@@ -82,10 +84,12 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget* centralWidget = new QWidget(this);
     centralWidget->setLayout(mainLayout);
     setCentralWidget(centralWidget);
+
+    // Connecting
+    QObject::connect(addNodeButton, &QPushButton::clicked, canvasWidget, &CanvasWidget::onAddNodeButtonClick);
+    QObject::connect(canvasWidget, &CanvasWidget::mouseClickedOnCanvas, canvasWidget, &CanvasWidget::onMousePressEvent);
 }
 
-MainWindow::~MainWindow()
-{
-}
+MainWindow::~MainWindow() {}
 
 
