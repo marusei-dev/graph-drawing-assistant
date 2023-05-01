@@ -7,10 +7,11 @@
 
 class CanvasWidget : public QWidget {
     Q_OBJECT
-    Graph* graph;
+    Graph graph;
     bool addNodeButtonClicked;
 public:
     CanvasWidget(QWidget* parent = nullptr);
+    void redrawGraph();
 signals:
     void mouseClickedOnCanvas(QMouseEvent* event);
 protected:
@@ -20,7 +21,6 @@ public slots:
     void onAddUndirectedEdgeButtonClick();
     void onAddDirectedEdgeButtonClick();
     void onMousePressEvent(QMouseEvent* event);
-
 };
 
 #endif // CANVASWIDGET_H

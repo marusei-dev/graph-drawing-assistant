@@ -15,6 +15,8 @@
 #include <QPixmap>
 #include <QPalette>
 #include "canvaswidget.h"
+#include <QString>
+#include <QCoreApplication>
 
 
 

@@ -1,8 +1,6 @@
 #include "canvaswidget.h"
 
-CanvasWidget::CanvasWidget(QWidget* parent) : QWidget(parent), addNodeButtonClicked(false) {
-    graph = new Graph;
-}
+CanvasWidget::CanvasWidget(QWidget* parent) : QWidget(parent), addNodeButtonClicked(false) {}
 
 void CanvasWidget::onAddNodeButtonClick() {
     addNodeButtonClicked = true;
@@ -17,8 +15,9 @@ void CanvasWidget::mousePressEvent(QMouseEvent* event) {
 void CanvasWidget::onMousePressEvent(QMouseEvent* event) {
     if (addNodeButtonClicked) {
            addNodeButtonClicked = false;
-
+           graph.addVertex(event->pos());
     }
+    redrawGraph();
 }
 
 void CanvasWidget::onAddDirectedEdgeButtonClick() {}

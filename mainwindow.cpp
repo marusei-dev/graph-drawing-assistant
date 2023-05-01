@@ -64,8 +64,9 @@ MainWindow::MainWindow(QWidget *parent)
     addDockWidget(Qt::LeftDockWidgetArea, dockToolbar);
     addDockWidget(Qt::RightDockWidgetArea, dockProperties);
 
-    // Loading the background picture
-    QPixmap backgroundPixmap("C:\\Qt\\Projects\\GraphDrawingAssistant\\src\\dotted-background.png");
+    // Loading the background picture for the canvas widget
+    QString backgroundPath = QCoreApplication::applicationDirPath() + "/src/dotted-background.png";
+    QPixmap backgroundPixmap(backgroundPath);
     QPalette backgroundPalette;
     backgroundPalette.setBrush(QPalette::Window, backgroundPixmap);
 
