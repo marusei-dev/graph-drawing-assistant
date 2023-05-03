@@ -16,8 +16,9 @@ void CanvasWidget::onMousePressEvent(QMouseEvent* event) {
     if (addNodeButtonClicked) {
            addNodeButtonClicked = false;
            graph.addVertex(event->pos());
+           cout << "Node added" << endl;
     }
-    redrawGraph();
+    // redrawGraph();
 }
 
 void CanvasWidget::onAddDirectedEdgeButtonClick() {}
