@@ -14,12 +14,16 @@
 
 class Vertex
 {
+    int ID;
     QString name;
     QPoint position;
 public:
-    Vertex(QString name, const QPoint& position);
+    Vertex(QString name, const QPoint& position, int ID);
     Vertex();
-    Vertex(const Vertex& other);
+    QString getName() const;
+    QPoint getPosition() const;
+    int getID() const;
+    void setID(int ID);
 };
 
 #endif // VERTEX_H

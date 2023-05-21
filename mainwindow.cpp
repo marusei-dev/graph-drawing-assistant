@@ -53,10 +53,9 @@ MainWindow::MainWindow(QWidget *parent)
     addDockWidget(Qt::LeftDockWidgetArea, dockToolbar);
     addDockWidget(Qt::RightDockWidgetArea, dockProperties);
 
-    QString backgroundPath = QCoreApplication::applicationDirPath() + "/src/dotted-background.png";
-    QPixmap backgroundPixmap(backgroundPath);
+
     QPalette backgroundPalette;
-    backgroundPalette.setBrush(QPalette::Window, backgroundPixmap);
+    backgroundPalette.setBrush(QPalette::Window, QBrush(Qt::white));
 
     CanvasWidget* canvasWidget = new CanvasWidget(this);
     canvasWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -70,6 +69,7 @@ MainWindow::MainWindow(QWidget *parent)
     QWidget* centralWidget = new QWidget(this);
     centralWidget->setLayout(mainLayout);
     setCentralWidget(centralWidget);
+
 
     /*
      * Below there are implemented connections between signals and slots in the programme.

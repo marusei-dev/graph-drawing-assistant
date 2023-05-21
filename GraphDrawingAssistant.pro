@@ -14,14 +14,16 @@ SOURCES += \
     graph.cpp \
     main.cpp \
     mainwindow.cpp \
-    vertex.cpp
+    vertex.cpp \
+    vertexwidget.cpp
 
 HEADERS += \
     canvaswidget.h \
     edge.h \
     graph.h \
     mainwindow.h \
-    vertex.h
+    vertex.h \
+    vertexwidget.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

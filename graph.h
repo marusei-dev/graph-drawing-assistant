@@ -14,16 +14,19 @@
 
 class Graph
 {
-    Vertex** vertexSet;
+    Vertex* vertexSet;
     int vertexSetSize;
-    Edge** edgeSet;
+    Edge* edgeSet;
     int edgeSetSize;
 
 public:
     Graph();
-
+    int getVertexSetSize();
+    int getEdgeSetSize();
+    friend class CanvasWidget;
 public slots:
     void addVertex(QString name, QPoint position);
+    void deleteVertex(int ID);
 
 };
 
