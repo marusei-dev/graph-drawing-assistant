@@ -1,37 +1,40 @@
 #include <QWidget>
 #ifndef CANVASWIDGET_H
 #define CANVASWIDGET_H
-#include "graph.h"
 #include <QMouseEvent>
 #include <iostream>
+#include "graph.h"
+#include <QPoint>
 
 /*
-
-CanvasWidget is the class created to manage the area of the programme between two dock areas, where the graph will be drawn.
-
-ATTRIBUTES
-
-Graph graph - an object of the Graph class. graph will contain all vertices and edges, as well as interactions between the two.
-bool addNodeButtonClicked - a flag that is switched to true when the "Add Node" button is pressed in the interface.
-
+ * CanvasWidget is a manually created class that is derived from QWidget.
+ *
+ * It was necessary because of the restrictions of data access when using slots of a general QWidget class.
 */
 
 class CanvasWidget : public QWidget {
     Q_OBJECT
     Graph graph;
     bool addNodeButtonClicked;
+    bool vertexTextInputFieldConnected;
 public:
     CanvasWidget(QWidget* parent = nullptr);
+    ~CanvasWidget();
+    /*
+     * redrawGraph method updates the graph shown on screen.
+     * It is called whenever a mouse is clicked on the canvas.
+    */
     void redrawGraph();
 signals:
     void mouseClickedOnCanvas(QMouseEvent* event);
+    void addNodeRequested(QPoint position);
 protected:
     void mousePressEvent(QMouseEvent* event) override;
 public slots:
     void onAddNodeButtonClick();
     void onAddUndirectedEdgeButtonClick();
-    void onAddDirectedEdgeButtonClick();
     void onMousePressEvent(QMouseEvent* event);
+    void onAddNodeRequested(QPoint position);
 };
 
 #endif // CANVASWIDGET_H

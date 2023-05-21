@@ -1,8 +1,11 @@
 
 #include "graph.h"
 
-Graph::Graph() {}
+Graph::Graph()
+{
 
-bool Graph::addVertex(QPoint coordinate) {
-    return true;
+}
+
+void Graph::addVertex(QString name, QPoint position) {
+
 }

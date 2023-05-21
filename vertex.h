@@ -2,22 +2,24 @@
 #ifndef VERTEX_H
 #define VERTEX_H
 
-#include <string>
-#include "coordinate.h"
-using namespace std;
 
-enum Color {WHITE, GREY, GREEN};
+#include <QWidget>
+#include <QPoint>
+
+/*
+ * The Vertex class, objects of which will represent nodes in the graph on the screen.
+ *
+ * Inherited from QWidget to process mouse press events.
+*/
 
 class Vertex
 {
-    string name;
-    Coordinate position;
-    Color color;
-    unsigned int outDegree;
-    unsigned int inDegree;
+    QString name;
+    QPoint position;
 public:
+    Vertex(QString name, const QPoint& position);
     Vertex();
-    Vertex(string name, Coordinate position, Color color = WHITE, unsigned int inDegree = 0, unsigned int outDegree = 0);
+    Vertex(const Vertex& other);
 };
 
 #endif // VERTEX_H
