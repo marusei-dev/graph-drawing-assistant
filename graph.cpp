@@ -21,6 +21,16 @@ int Graph::getEdgeSetSize() {return edgeSetSize;}
 int Graph::getVertexSetSize() {return vertexSetSize;}
 
 void Graph::deleteVertex(int ID) {
+    int i = 0;
+    while (i < edgeSetSize) {
+        if (edgeSet[i].getStartVertex()->getID() == vertexSet[ID].getID() || edgeSet[i].getEndVertex()->getID() == vertexSet[ID].getID()) {
+            deleteEdge(i);
+            i = 0;
+        }
+        else {
+            i++;
+        }
+    }
     Vertex* temp = new Vertex[vertexSetSize];
     for (int i = 0; i < vertexSetSize; i++)
         temp[i] = vertexSet[i];
@@ -30,6 +40,36 @@ void Graph::deleteVertex(int ID) {
             j++;
         vertexSet[i] = temp[j];
         vertexSet[i].setID(i);
+        j++;
+    }
+    delete[] temp;
+}
+
+
+void Graph::addEdge(int ID1, int ID2) {
+    Edge* temp = new Edge[edgeSetSize];
+    for (int i = 0; i < edgeSetSize; i++) {
+        temp[i] = edgeSet[i];
+    }
+    edgeSet = new Edge[++edgeSetSize];
+    for (int i = 0; i < edgeSetSize - 1; i++) {
+        edgeSet[i] = temp[i];
+    }
+    edgeSet[edgeSetSize - 1] = Edge(edgeSetSize - 1, &vertexSet[ID1], &vertexSet[ID2]);
+    edgeSet[edgeSetSize - 1].setID(edgeSetSize - 1);
+    delete[] temp;
+}
+
+void Graph::deleteEdge(int ID) {
+    Edge* temp = new Edge[edgeSetSize];
+    for (int i = 0; i < edgeSetSize; i++)
+        temp[i] = edgeSet[i];
+    edgeSet = new Edge[--edgeSetSize];
+    for (int i = 0, j = 0; i < edgeSetSize; i++) {
+        if (j == ID)
+            j++;
+        edgeSet[i] = temp[j];
+        edgeSet[i].setID(i);
         j++;
     }
     delete[] temp;

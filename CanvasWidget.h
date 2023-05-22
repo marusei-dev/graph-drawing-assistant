@@ -7,6 +7,14 @@
 #include <QPoint>
 #include <QPlainTextEdit>
 #include "vertexwidget.h"
+#include <QComboBox>
+#include <QStringList>
+#include <QLabel>
+#include <QSpacerItem>
+#include <QPushButton>
+#include <QStringListModel>
+#include "edgewidget.h"
+#include <fstream>
 
 /*
  * CanvasWidget is a manually created class that is derived from QWidget.
@@ -18,11 +26,15 @@ class CanvasWidget : public QWidget {
     Q_OBJECT
     Graph graph;
     bool addNodeButtonClicked;
-    bool vertexTextInputFieldConnected;
     QLineEdit* vertexNameTextField;
     VertexWidget** vertexWidgetSet;
+    EdgeWidget** edgeWidgetSet;
     QWidget* addVertexWindow;
+    QWidget* addUndirectedEdgeWindow;
+    QComboBox* startVertexComboBox;
+    QComboBox* endVertexComboBox;
     int vertexWidgetSetSize;
+    int edgeWidgetSetSize;
     QPoint savedPosition;
     int vertexRadius;
 public:
@@ -41,6 +53,9 @@ public slots:
     void onMousePressEvent(QMouseEvent* event);
     void onAddNodeRequested(QPoint position);
     void onDeleteVertexRequested(int ID);
+    void onDeleteEdgeRequested(int ID);
+    void onSaveGraphAction();
+    void onLoadLastGraphAction();
 };
 
 #endif // CANVASWIDGET_H

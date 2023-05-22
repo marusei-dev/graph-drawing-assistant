@@ -13,9 +13,11 @@ MainWindow::MainWindow(QWidget *parent)
     QMenu* fileMenu = new QMenu("File", topMenuBar);
     QMenu* editMenu = new QMenu("Edit", topMenuBar);
 
-    QAction* newCanvasAction = new QAction("New Canvas", fileMenu);
+    saveGraphAction = new QAction("Save Graph", fileMenu);
+    loadLastGraphAction = new QAction("Load Graph", fileMenu);
 
-    fileMenu->addAction(newCanvasAction);
+    fileMenu->addAction(saveGraphAction);
+    fileMenu->addAction(loadLastGraphAction);
 
     topMenuBar->addMenu(fileMenu);
     topMenuBar->addMenu(editMenu);
@@ -57,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     QPalette backgroundPalette;
     backgroundPalette.setBrush(QPalette::Window, QBrush(Qt::white));
 
-    CanvasWidget* canvasWidget = new CanvasWidget(this);
+    canvasWidget = new CanvasWidget(this);
     canvasWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     canvasWidget->setAutoFillBackground(true);
     canvasWidget->setPalette(backgroundPalette);
@@ -70,6 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
     centralWidget->setLayout(mainLayout);
     setCentralWidget(centralWidget);
 
+    QShortcut* addNodeButtonShortcut = new QShortcut(QKeySequence(Qt::Key_V), this);
+    QShortcut* addUndirectedEdgeButtonShortcut = new QShortcut(QKeySequence(Qt::Key_E), this);
 
     /*
      * Below there are implemented connections between signals and slots in the programme.
@@ -88,6 +92,13 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(addNodeButton, &QPushButton::clicked, canvasWidget, &CanvasWidget::onAddNodeButtonClick);
     QObject::connect(canvasWidget, &CanvasWidget::mouseClickedOnCanvas, canvasWidget, &CanvasWidget::onMousePressEvent);
     QObject::connect(canvasWidget, &CanvasWidget::addNodeRequested, canvasWidget, &CanvasWidget::onAddNodeRequested);
+    QObject::connect(addUndirectedEdgeButton, &QPushButton::clicked, canvasWidget, &CanvasWidget::onAddUndirectedEdgeButtonClick);
+    QObject::connect(addNodeButtonShortcut, &QShortcut::activated, addNodeButton, &QPushButton::click);
+    QObject::connect(addUndirectedEdgeButtonShortcut, &QShortcut::activated, addUndirectedEdgeButton, &QPushButton::click);
+    /*
+        Connection between actions in the menu fails for some reason. I need to save the current graph to a file
+        using the respective action in the file menu. And load it.
+    */
 }
 
 MainWindow::~MainWindow() {}

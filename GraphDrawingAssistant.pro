@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     canvaswidget.cpp \
     edge.cpp \
+    edgewidget.cpp \
     graph.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     canvaswidget.h \
     edge.h \
+    edgewidget.h \
     graph.h \
     mainwindow.h \
     vertex.h \
@@ -29,6 +31,3 @@ HEADERS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
-
-DISTFILES += \
-    src/dotted-background.png

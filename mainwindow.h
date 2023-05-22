@@ -17,6 +17,7 @@
 #include "canvaswidget.h"
 #include <QString>
 #include <QCoreApplication>
+#include <QShortcut>
 
 
 
@@ -24,7 +25,9 @@ class MainWindow : public QMainWindow
 
 {
     Q_OBJECT
-
+    CanvasWidget* canvasWidget;
+    QAction* saveGraphAction;
+    QAction* loadLastGraphAction;
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

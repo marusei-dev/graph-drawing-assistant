@@ -5,6 +5,7 @@
 #include "edge.h"
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QLineEdit>
 #include <iostream>
 
@@ -26,7 +27,9 @@ public:
     friend class CanvasWidget;
 public slots:
     void addVertex(QString name, QPoint position);
+    void addEdge(int ID1, int ID2);
     void deleteVertex(int ID);
+    void deleteEdge(int ID);
 
 };
 

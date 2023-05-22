@@ -19,18 +19,13 @@ void VertexWidget::setName(QString name) {this->name = name;}
 void VertexWidget::setID(int ID) {this->ID = ID;}
 
 void VertexWidget::mousePressEvent(QMouseEvent* event) {
-
-    QRect widgetRect = rect();
-    rect().adjust(20, 20, 20, 20);
     if (rect().contains(event->pos())) {
-        std::cout << "Mouse clicked on a vertex" << std::endl;
         emit mouseClickedOnVertex(event);
     }
 }
 
 void VertexWidget::onMouseClickedOnVertex(QMouseEvent* event) {
     if (event->button() == Qt::RightButton) {
-        std::cout << "Delete request sent" << std::endl;
         emit deleteVertexRequested(ID);
     }
 }
