@@ -1,25 +1,64 @@
-#include <QWidget>
 #ifndef CANVASWIDGET_H
 #define CANVASWIDGET_H
+#include <QWidget>
 #include <QMouseEvent>
 #include <iostream>
 #include "graph.h"
 #include <QPoint>
-#include <QPlainTextEdit>
 #include "vertexwidget.h"
 #include <QComboBox>
-#include <QStringList>
 #include <QLabel>
-#include <QSpacerItem>
 #include <QPushButton>
-#include <QStringListModel>
 #include "edgewidget.h"
 #include <fstream>
 
 /*
- * CanvasWidget is a manually created class that is derived from QWidget.
+ * CanvasWidget is the class responsible for the proper work of the canvas area between dock widgets which is used for drawing graphs.
  *
- * It was necessary because of the restrictions of data access when using slots of a general QWidget class.
+ * ATTRIBUTES
+ *
+ * Graph graph - an object of the Graph class, which is responsible for keeping data on vertices and edges. CanvasWidget simply fetches the data
+ * from this object when drawing VertexWidgets and EdgeWidgets.
+ *
+ * bool addNodeButtonClicked - a flag which reflects the state of the "Add Node" button in the tool bar dock widget.
+ *
+ * QLineEdit* vertexNameTextField - an element of the interface of the window which is opened when the user desires to add a vertex to the graph.
+ * Fetches the name of the vertex to be added from the user.
+ *
+ * |IMPORTANT REMARK!
+ * |
+ * |It seems to be not the best practice to keep transient interface elements as attributes of their parent class, however, the use of QObject::connect
+ * |operations in pair with lambda functions inside them made it necessary to store these elements this way, otherwise their data is lost and the
+ * |connections do not work.
+ *
+ * VertexWidget** vertexWidgetSet - the set of VertexWidget objects. It is updated every time redrawGraph() method is called, where it is rebuilt to
+ * match the vertex set of the Graph graph attribute before being used to draw vertices on the canvas.
+ *
+ * EdgeWidget** edgeWidgetSet - the same idea as with the vertexWidgetSet.
+ *
+ * QWidget* addVertexWindow - the window that is opened after the user clicked on the "Add Node" button and clicked on the canvas afterwards. Prompts
+ * the user to enter the name of the vertex they want to add.
+ *
+ * QWidget* addUndirectedEdgeWindow - the window that is opened after the user clicks on the "Add Undirected Edge" button in the tool bar dock widget.
+ * Prompts the user to choose endpoints of the edge to be added.
+ *
+ * QComboBox* startVertexComboBox - a dropdown for the starting vertex of the edge to be added.
+ *
+ * QComboBox* endVertexComboBox - a dropdown for the end vertex of the edge to be added.
+ *
+ * int vertexWidgetSetSize - the number of the elements in the vertexWidgetSet.
+ *
+ * int edgeWidgetSetSize - the number of the elements in the edgeWidgetSet.
+ *
+ * QPoint savedPosition - yet another attribute created to avoid the loss of data when using lambda expressions in QObject::connect. "Saves" the position
+ * of the mouse click.
+ *
+ * int vertexRadius - the attribute that speaks for itself. Keeps the vertex radius, created to quickly change this property of VertexWidgets that will
+ * be drawn.
+ *
+ * METHODS
+ *
+ *
 */
 
 class CanvasWidget : public QWidget {
