@@ -42,6 +42,10 @@ class MainWindow : public QMainWindow
     CanvasWidget* canvasWidget;
     QAction* saveGraphAction;
     QAction* loadLastGraphAction;
+    QLabel* vertexNumberTextProperty;
+    QLabel* edgeNumberTextProperty;
+    QString edgeNumberText;
+    QString vertexNumberText;
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

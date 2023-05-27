@@ -11,6 +11,10 @@
 #include <QPushButton>
 #include "edgewidget.h"
 #include <fstream>
+#include <QCoreApplication>
+#include <QFile>
+#include <QStandardPaths>
+#include <QDir>
 
 /*
  * CanvasWidget is the class responsible for the proper work of the canvas area between dock widgets which is used for drawing graphs.
@@ -119,9 +123,12 @@ public:
     CanvasWidget(QWidget* parent = nullptr);
     ~CanvasWidget();
     void redrawGraph();
+    int getVertexSetSize() const;
+    int getEdgeSetSize() const;
 signals:
     void mouseClickedOnCanvas(QMouseEvent* event);
     void addNodeRequested(QPoint position);
+    void graphChanged();
 protected:
     void mousePressEvent(QMouseEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
@@ -132,8 +139,8 @@ public slots:
     void onAddNodeRequested(QPoint position);
     void onDeleteVertexRequested(int ID);
     void onDeleteEdgeRequested(int ID);
-    void onSaveGraphAction();
-    void onLoadLastGraphAction();
+    void onSaveGraphAction(bool checked);
+    void onLoadLastGraphAction(bool checked);
 };
 
 #endif // CANVASWIDGET_H

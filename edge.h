@@ -17,7 +17,9 @@
  *
  * METHODS
  *
+ * Constructor and destructor...
  *
+ * TO BE COMPLETED
 */
 
 class Edge

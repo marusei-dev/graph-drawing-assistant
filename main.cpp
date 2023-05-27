@@ -12,5 +12,6 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.setWindowState(Qt::WindowMaximized);
     w.show();
+    std::cout << "main" << std::endl;
     return a.exec();
 }

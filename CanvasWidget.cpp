@@ -2,7 +2,9 @@
 
 CanvasWidget::CanvasWidget(QWidget* parent) :
     QWidget(parent), addNodeButtonClicked(false),
-    vertexWidgetSet(nullptr), edgeWidgetSet(nullptr), addVertexWindow(nullptr), vertexWidgetSetSize(0), savedPosition(0, 0), vertexRadius(0) {}
+    vertexWidgetSet(nullptr), edgeWidgetSet(nullptr), addVertexWindow(nullptr), vertexWidgetSetSize(0), savedPosition(0, 0), vertexRadius(0) {
+    emit graphChanged();
+}
 
 void CanvasWidget::onAddNodeButtonClick() {
     addNodeButtonClicked = true;
@@ -22,12 +24,10 @@ void CanvasWidget::onMousePressEvent(QMouseEvent* event) {
 }
 
 void CanvasWidget::onAddNodeRequested(QPoint position) {
-    // Creating the window
     addVertexWindow = new QWidget();
     addVertexWindow->resize(250, 40);
     addVertexWindow->setWindowTitle("Add Node");
 
-    // Setting the layout for the window. Adding the QLineEdit text field.
     QVBoxLayout* addVertexWindowVerticalLayout = new QVBoxLayout(addVertexWindow);
     vertexNameTextField = new QLineEdit(addVertexWindow);
     vertexNameTextField->setPlaceholderText("Enter the name of the node and press Enter");
@@ -35,17 +35,10 @@ void CanvasWidget::onAddNodeRequested(QPoint position) {
     addVertexWindowVerticalLayout->setAlignment(Qt::AlignTop);
     addVertexWindowVerticalLayout->setContentsMargins(QMargins(2, 2, 2, 2));
 
-    /*
-     * Opening the window and saving the position of the mouse click which is passed as a parameter to this function. The latter is necessary because
-     * otherwise the value of position is lost when entering the QObject::connect statement and, particularly, the lambda expression.
-    */
     addVertexWindow->show();
     savedPosition = position;
 
-    /*
-     * Processing the Return button press on the keyboard. Checking if the text field is non-empty, in which case adding the vertex with the entered name to
-     * the graph. Redrawing the graph to display the changes.
-    */
+
     QObject::connect(vertexNameTextField, &QLineEdit::returnPressed, this, [&]() {
         QString inputText = vertexNameTextField->text();
         if (inputText.toStdString() != "") {
@@ -55,10 +48,6 @@ void CanvasWidget::onAddNodeRequested(QPoint position) {
         }
     });
 
-    /*
-     * Limiting the number of characters the user can enter. Done by simpling deleting the last character on an attempt to enter it if the length
-     * of the input string is greater than 10.
-    */
     QObject::connect(vertexNameTextField, &QLineEdit::textEdited, this, [&]() {
         QString inputText = vertexNameTextField->text();
         if (inputText.toStdString().length() > 10) {
@@ -68,26 +57,21 @@ void CanvasWidget::onAddNodeRequested(QPoint position) {
 }
 
 void CanvasWidget::onAddUndirectedEdgeButtonClick() {
-    // Creating the window
     addUndirectedEdgeWindow = new QWidget();
     addUndirectedEdgeWindow->resize(400, 200);
     addUndirectedEdgeWindow->setWindowTitle("Add Undirected Edge");
 \
-    // Adding two main layouts.
     QVBoxLayout* addUndirectedEdgeWindowVerticalLayout = new QVBoxLayout(addUndirectedEdgeWindow);
     QHBoxLayout* addUndirectedEdgeWindowHorizontalLayout = new QHBoxLayout(addUndirectedEdgeWindow);
 
-    // Initialising three of four elements of the Add Undirected Edge window.
     startVertexComboBox = new QComboBox(addUndirectedEdgeWindow);
     QLabel* connectingText = new QLabel("----------------------------", addUndirectedEdgeWindow);
     endVertexComboBox = new QComboBox(addUndirectedEdgeWindow);
 
-    // Creating a layout for the QLabel text in the center. It is necessary to position it in the center between two dropdown lists.
     QHBoxLayout* connectingTextHorizontalLayout = new QHBoxLayout();
     connectingTextHorizontalLayout->addWidget(connectingText);
     connectingTextHorizontalLayout->setAlignment(Qt::AlignHCenter);
 
-    // Adding elements to the previously created layouts and setting the layouts to properly display elements.
     addUndirectedEdgeWindowHorizontalLayout->addWidget(startVertexComboBox);
     addUndirectedEdgeWindowHorizontalLayout->addLayout(connectingTextHorizontalLayout);
     addUndirectedEdgeWindowHorizontalLayout->addWidget(endVertexComboBox);
@@ -97,15 +81,9 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
     addUndirectedEdgeWindowHorizontalLayout->setStretchFactor(connectingTextHorizontalLayout, 10);
     addUndirectedEdgeWindowHorizontalLayout->setStretchFactor(endVertexComboBox, 10);
 
-    // Creating the confirmation button for the user to confirm addition of an edge after choosing endpoints.
     QPushButton* confirmationButton = new QPushButton("Confirm", addUndirectedEdgeWindow);
     addUndirectedEdgeWindowVerticalLayout->addLayout(addUndirectedEdgeWindowHorizontalLayout);
     addUndirectedEdgeWindowVerticalLayout->addWidget(confirmationButton);
-
-    /*
-     * Adding elements to the dropdown lists. The second dropdown list (the one located closer to the right edge of the window) has all elements but
-     * the first one, to avoid the same vertex appearing simultaneously in both dropdown lists.
-    */
 
     for (int i = 0; i < vertexWidgetSetSize; i++) {
            startVertexComboBox->addItem(vertexWidgetSet[i]->getName());
@@ -114,13 +92,8 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
            }
     }
 
-    // Opening the window.
     addUndirectedEdgeWindow->show();
 
-    /*
-     * Every time the user chooses a vertex from the list of vertices in the first dropdown list, the other dropdown list gets rebuilt so that it
-     * does not contain the vertex that is chosen in the first dropdown list.
-    */
     QObject::connect(startVertexComboBox, &QComboBox::currentIndexChanged, this, [&]() {
         endVertexComboBox->clear();
         for (int i = 0; i < vertexWidgetSetSize; i++) {
@@ -130,10 +103,6 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
         }
     });
 
-    /*
-     * Responding to the confirmation button click. Before adding an edge with chosen vertices, the index of the end vertex must be corrected, because
-     * the second dropdown list contains less elements than the first one, so it would be incorrect to just take that index for later usage.
-    */
     QObject::connect(confirmationButton, &QPushButton::clicked, this, [&]() {
         addUndirectedEdgeWindow->close();
         int correctedEndVertexIndex = endVertexComboBox->currentIndex();
@@ -146,7 +115,6 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
 }
 
 void CanvasWidget::redrawGraph() {
-    // Cleaning the vertex widget set before filling it with new values.
     if (vertexWidgetSet != nullptr) {
            for (int i = 0; i < vertexWidgetSetSize; i++) {
                delete vertexWidgetSet[i];
@@ -155,14 +123,9 @@ void CanvasWidget::redrawGraph() {
            vertexWidgetSet = nullptr;
     }
 
-    // Obtaining the correct vertex set size to be used as the size for the vertex widget set.
     vertexWidgetSetSize = graph.getVertexSetSize();
     vertexWidgetSet = new VertexWidget*[vertexWidgetSetSize];
 
-    /*
-     * Copying vertices from the Graph graph attribute. Since the graph attribute containts vertices as objects of the class Vertex, we cannot simply
-     * copy elements using the assignment operation. This is an issue that could be potentially solved using the conversion constructor. CAN BE IMPROVED.
-    */
     for (int i = 0; i < vertexWidgetSetSize; i++) {
            vertexWidgetSet[i] = new VertexWidget(this);
            vertexWidgetSet[i]->setPosition(graph.vertexSet[i].getPosition());
@@ -177,7 +140,6 @@ void CanvasWidget::redrawGraph() {
            vertexWidgetSet[i]->show();
     }
 
-    // Cleaning the edge widget set before filling it with new values.
     if (edgeWidgetSet != nullptr) {
            for (int i = 0; i < edgeWidgetSetSize; i++) {
                delete edgeWidgetSet[i];
@@ -186,15 +148,9 @@ void CanvasWidget::redrawGraph() {
            edgeWidgetSet = nullptr;
     }
 
-    // Obtaining the correct size of the edge widget set.
     edgeWidgetSetSize = graph.getEdgeSetSize();
     edgeWidgetSet = new EdgeWidget*[edgeWidgetSetSize];
 
-    /*
-     *     Copying vertices from the Graph graph attribute. Since the graph attribute containts vertices as objects of the class Vertex,
-     *     we cannot simply copy elements using the assignment operation.This is an issue that could be potentially solved using the conversion
-     *     constructor. CAN BE IMPROVED.
-    */
     for (int i = 0; i < edgeWidgetSetSize; i++) {
            edgeWidgetSet[i] = new EdgeWidget(this);
            edgeWidgetSet[i]->addEnds(graph.edgeSet[i].getStartVertex(), graph.edgeSet[i].getEndVertex());
@@ -206,32 +162,22 @@ void CanvasWidget::redrawGraph() {
            QObject::connect(edgeWidgetSet[i], &EdgeWidget::deleteEdgeRequested, this, &CanvasWidget::onDeleteEdgeRequested);
            edgeWidgetSet[i]->show();
     }
-
-    /*
-     * update() causes the paintEvent(QPaintEvent* event) to execute, thus redrawing the updated graph. This is a method that CanvasWidget inherited
-     * from the QWidget class.
-    */
     update();
+    emit graphChanged();
 }
 
 void CanvasWidget::paintEvent(QPaintEvent* event) {
-    // Activating the painting functionality.
     QWidget::paintEvent(event);
 
-    // Initialising the painter and providing initial settigs.
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::black);
     painter.setBrush(Qt::black);
 
-    // Setting up the font for later use when drawing text.
     QFont font;
     font.setPointSize(8);
     painter.setFont(font);
 
-    /*
-     * Drawing ellipses for vertices and text for names of vertices.
-    */
     for (int i = 0; i < vertexWidgetSetSize; i++) {
         painter.setPen(Qt::gray);
         painter.setBrush(Qt::gray);
@@ -242,9 +188,6 @@ void CanvasWidget::paintEvent(QPaintEvent* event) {
         painter.drawText(textRect, Qt::AlignCenter, vertexWidgetSet[i]->getName());
     }
 
-    /*
-     * Drawing edges. In simple terms, a line is drawn from the position of the starting vertex to the position of the end vertex.
-    */
     for (int i = 0; i < edgeWidgetSetSize; i++) {
         painter.setPen(Qt::gray);
         painter.setBrush(Qt::gray);
@@ -264,25 +207,116 @@ void CanvasWidget::onDeleteEdgeRequested(int ID) {
     redrawGraph();
 }
 
-/*
- * TO BE COMPLETED
-*/
-void CanvasWidget::onSaveGraphAction() {
-    std::cout << "Tried to Save!\n";
-    std::ofstream saveFile("LastGraph.txt", std::ios::out);
-    if (saveFile.is_open()) {
-        saveFile << graph.vertexSetSize;
-        saveFile << "|";
-        for (int i = 0; i < graph.vertexSetSize; i++) {
-               saveFile << graph.vertexSet[i].getID() << "," << graph.vertexSet[i].getName().toStdString() << "," << graph.vertexSet[i].getPosition().x() << "," << graph.vertexSet[i].getPosition().y() << ";";
+void CanvasWidget::onSaveGraphAction(bool checked) {
+    QString saveFilePath = QCoreApplication::applicationDirPath() + "/" + "LastGraph.txt";
+    try {
+        std::ofstream saveFile(saveFilePath.toStdString(), std::ios::out);
+        if (saveFile.is_open()) {
+               for (int i = 0; i < graph.vertexSetSize; i++) {
+                   saveFile << graph.vertexSet[i].getName().toStdString() << ","
+                            << graph.vertexSet[i].getPosition().x() << ","
+                            << graph.vertexSet[i].getPosition().y() << ";";
+               }
+               saveFile << "?";
+               for (int i = 0; i < graph.edgeSetSize; i++) {
+                   if (graph.edgeSet[i].getStartVertex() && graph.edgeSet[i].getEndVertex()) {
+                       saveFile << graph.edgeSet[i].getStartVertex()->getID() << ","
+                                << graph.edgeSet[i].getEndVertex()->getID() << ";";
+                   }
+               }
+               saveFile.close();
+        } else {
+               throw std::runtime_error("Failed to open the file for writing.");
         }
-        saveFile << "?";
-        saveFile << graph.edgeSetSize;
-        for (int i = 0; i < graph.edgeSetSize; i++) {
-               saveFile << graph.edgeSet[i].getID() << "," << graph.edgeSet->getStartVertex()->getID() << "," << graph.edgeSet[i].getEndVertex()->getID() << ";";
-        }
-        std::cout << "Wrote to FILE!\n";
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Error occurred while saving the graph: " << e.what() << std::endl;
     }
 }
 
-void CanvasWidget::onLoadLastGraphAction() {}
+std::vector<std::string> splitString(const std::string& str, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::istringstream iss(str);
+    std::string token;
+
+    while (std::getline(iss, token, delimiter)) {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
+
+void CanvasWidget::onLoadLastGraphAction(bool checked)
+{
+    QString loadFilePath = QCoreApplication::applicationDirPath() + "/" + "LastGraph.txt";
+    std::ifstream loadFile(loadFilePath.toStdString(), std::ios::in);
+    if (loadFile.is_open()) {
+        std::cout << "File opened" << std::endl;
+        std::string line;
+        if (std::getline(loadFile, line)) { // Read the line containing vertex and edge information
+               std::vector<std::string> tokens = splitString(line, '?'); // Split the line using the '?' separator
+
+               if (tokens.size() == 2) {
+                   std::vector<std::string> vertexTokens = splitString(tokens[0], ';'); // Split the vertex data using the ';' separator
+                   for (const std::string& vertexToken : vertexTokens) {
+                       std::vector<std::string> vertexFields = splitString(vertexToken, ','); // Split each vertex property using the ',' separator
+
+                       if (vertexFields.size() == 3) {
+                           std::string vertexName = vertexFields[0];
+                           int vertexX, vertexY;
+                           try {
+                               vertexX = std::stoi(vertexFields[1]);
+                               vertexY = std::stoi(vertexFields[2]);
+                           }
+                           catch (const std::invalid_argument& e) {
+                               std::cerr << "Invalid vertex coordinate format: " << e.what() << std::endl;
+                               return; // Abort loading if invalid coordinate format
+                           }
+
+                           graph.addVertex(QString::fromStdString(vertexName), QPoint(vertexX, vertexY));
+                       } else {
+                           std::cerr << "Invalid vertex field count: " << vertexFields.size() << std::endl;
+                           return; // Abort loading if invalid vertex field count
+                       }
+                   }
+
+                   std::vector<std::string> edgeTokens = splitString(tokens[1], ';'); // Split the edge data using the ';' separator
+                   for (const std::string& edgeToken : edgeTokens) {
+                       std::vector<std::string> edgeFields = splitString(edgeToken, ','); // Split each edge property using the ',' separator
+
+                       if (edgeFields.size() == 2) {
+                           int startVertexID, endVertexID;
+                           try {
+                               startVertexID = std::stoi(edgeFields[0]);
+                               endVertexID = std::stoi(edgeFields[1]);
+                           }
+                           catch (const std::invalid_argument& e) {
+                               std::cerr << "Invalid edge ID format: " << e.what() << std::endl;
+                               return; // Abort loading if invalid edge ID format
+                           }
+
+                           graph.addEdge(startVertexID, endVertexID);
+                       } else {
+                           std::cerr << "Invalid edge field count: " << edgeFields.size() << std::endl;
+                           return; // Abort loading if invalid edge field count
+                       }
+                   }
+               } else {
+                   std::cerr << "Invalid file format." << std::endl;
+                   return; // Abort loading if invalid file format
+               }
+        } else {
+               std::cerr << "Failed to read file." << std::endl;
+               return; // Abort loading if failed to read file
+        }
+
+        loadFile.close();
+        redrawGraph();
+    } else {
+        std::cerr << "Failed to open file for loading." << std::endl;
+    }
+}
+
+int CanvasWidget::getEdgeSetSize() const {return graph.edgeSetSize;}
+int CanvasWidget::getVertexSetSize() const {return graph.vertexSetSize;}
