@@ -42,6 +42,7 @@ class MainWindow : public QMainWindow
     CanvasWidget* canvasWidget;
     QAction* saveGraphAction;
     QAction* loadLastGraphAction;
+    QAction* toggleDeletionModeAction;
     QLabel* vertexNumberTextProperty;
     QLabel* edgeNumberTextProperty;
     QString edgeNumberText;

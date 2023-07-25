@@ -108,6 +108,7 @@ class CanvasWidget : public QWidget {
     Q_OBJECT
     Graph graph;
     bool addNodeButtonClicked;
+    bool deletionModeEnabled;
     QLineEdit* vertexNameTextField;
     VertexWidget** vertexWidgetSet;
     EdgeWidget** edgeWidgetSet;
@@ -134,6 +135,7 @@ protected:
     void paintEvent(QPaintEvent* event) override;
 public slots:
     void onAddNodeButtonClick();
+    void onToggleDeletionModeAction(bool status);
     void onAddUndirectedEdgeButtonClick();
     void onMousePressEvent(QMouseEvent* event);
     void onAddNodeRequested(QPoint position);

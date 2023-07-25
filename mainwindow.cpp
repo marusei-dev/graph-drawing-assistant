@@ -10,9 +10,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     saveGraphAction = new QAction("Save Graph", fileMenu);
     loadLastGraphAction = new QAction("Load Graph", fileMenu);
+    toggleDeletionModeAction = new QAction("Toggle Deletion Mode", editMenu);
+    toggleDeletionModeAction->setCheckable(true);
 
     fileMenu->addAction(saveGraphAction);
     fileMenu->addAction(loadLastGraphAction);
+    editMenu->addAction(toggleDeletionModeAction);
 
     topMenuBar->addMenu(fileMenu);
     topMenuBar->addMenu(editMenu);
@@ -77,15 +80,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     QShortcut* addNodeButtonShortcut = new QShortcut(QKeySequence(Qt::Key_V), this);
     QShortcut* addUndirectedEdgeButtonShortcut = new QShortcut(QKeySequence(Qt::Key_E), this);
+    QShortcut* toggleDeletionModeActionShortcut = new QShortcut(QKeySequence(Qt::Key_D), this);
 
     QObject::connect(saveGraphAction, &QAction::triggered, canvasWidget, &CanvasWidget::onSaveGraphAction);
     QObject::connect(loadLastGraphAction, &QAction::triggered, canvasWidget, &CanvasWidget::onLoadLastGraphAction);
+    QObject::connect(toggleDeletionModeAction, &QAction::toggled, canvasWidget, &CanvasWidget::onToggleDeletionModeAction);
     QObject::connect(addNodeButton, &QPushButton::clicked, canvasWidget, &CanvasWidget::onAddNodeButtonClick);
     QObject::connect(canvasWidget, &CanvasWidget::mouseClickedOnCanvas, canvasWidget, &CanvasWidget::onMousePressEvent);
     QObject::connect(canvasWidget, &CanvasWidget::addNodeRequested, canvasWidget, &CanvasWidget::onAddNodeRequested);
     QObject::connect(addUndirectedEdgeButton, &QPushButton::clicked, canvasWidget, &CanvasWidget::onAddUndirectedEdgeButtonClick);
     QObject::connect(addNodeButtonShortcut, &QShortcut::activated, addNodeButton, &QPushButton::click);
     QObject::connect(addUndirectedEdgeButtonShortcut, &QShortcut::activated, addUndirectedEdgeButton, &QPushButton::click);
+    QObject::connect(toggleDeletionModeActionShortcut, &QShortcut::activated, toggleDeletionModeAction, &QAction::toggle);
 
     // Temporary implementation.
     QObject::connect(canvasWidget, &CanvasWidget::graphChanged, this, [&]() {

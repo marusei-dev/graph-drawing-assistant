@@ -1,7 +1,7 @@
 #include "canvaswidget.h"
 
 CanvasWidget::CanvasWidget(QWidget* parent) :
-    QWidget(parent), addNodeButtonClicked(false),
+    QWidget(parent), addNodeButtonClicked(false), deletionModeEnabled(false),
     vertexWidgetSet(nullptr), edgeWidgetSet(nullptr), addVertexWindow(nullptr), vertexWidgetSetSize(0), savedPosition(0, 0), vertexRadius(0) {
     emit graphChanged();
 }
@@ -154,6 +154,7 @@ void CanvasWidget::redrawGraph() {
     for (int i = 0; i < edgeWidgetSetSize; i++) {
            edgeWidgetSet[i] = new EdgeWidget(this);
            edgeWidgetSet[i]->addEnds(graph.edgeSet[i].getStartVertex(), graph.edgeSet[i].getEndVertex());
+           edgeWidgetSet[i]->setID(graph.edgeSet[i].getID());
            edgeWidgetSet[i]->setParent(this);
            edgeWidgetSet[i]->move(QPoint((graph.edgeSet[i].getStartVertex()->getPosition().x() + graph.edgeSet[i].getEndVertex()->getPosition().x()) / 2, (graph.edgeSet->getStartVertex()->getPosition().y() + graph.edgeSet[i].getEndVertex()->getPosition().y()) / 2));
            edgeWidgetSet[i]->rect().moveTo(QPoint((graph.edgeSet[i].getStartVertex()->getPosition().x() + graph.edgeSet[i].getEndVertex()->getPosition().x()) / 2, (graph.edgeSet->getStartVertex()->getPosition().y() + graph.edgeSet[i].getEndVertex()->getPosition().y()) / 2));
@@ -186,12 +187,26 @@ void CanvasWidget::paintEvent(QPaintEvent* event) {
         painter.setBrush(Qt::black);
         QRectF textRect(vertexWidgetSet[i]->getPosition().x() - 30, vertexWidgetSet[i]->getPosition().y() - 28, 70, 14);
         painter.drawText(textRect, Qt::AlignCenter, vertexWidgetSet[i]->getName());
+        if (deletionModeEnabled) {
+            Qt::PenStyle penStyle = Qt::DashLine;
+            QPen pen(QColor(Qt::gray), 1, penStyle);
+            painter.setPen(pen);
+            painter.setBrush(Qt::NoBrush);
+            painter.drawRect(vertexWidgetSet[i]->getPosition().x(), vertexWidgetSet[i]->getPosition().y(), vertexWidgetSet[i]->width(), vertexWidgetSet[i]->height());
+        }
     }
 
     for (int i = 0; i < edgeWidgetSetSize; i++) {
         painter.setPen(Qt::gray);
         painter.setBrush(Qt::gray);
         painter.drawLine(edgeWidgetSet[i]->getStartVertex()->getPosition().toPointF(), edgeWidgetSet[i]->getEndVertex()->getPosition().toPointF());
+        if (deletionModeEnabled) {
+            Qt::PenStyle penStyle = Qt::DashLine;
+            QPen pen(QColor(Qt::gray), 1, penStyle);
+            painter.setPen(pen);
+            painter.setBrush(Qt::NoBrush);
+            painter.drawRect(edgeWidgetSet[i]->pos().x(), edgeWidgetSet[i]->pos().y(), edgeWidgetSet[i]->width(), edgeWidgetSet[i]->height());
+        }
     }
 }
 
@@ -316,6 +331,11 @@ void CanvasWidget::onLoadLastGraphAction(bool checked)
     } else {
         std::cerr << "Failed to open file for loading." << std::endl;
     }
+}
+
+void CanvasWidget::onToggleDeletionModeAction(bool status) {
+    deletionModeEnabled = status ? true : false;
+    redrawGraph();
 }
 
 int CanvasWidget::getEdgeSetSize() const {return graph.edgeSetSize;}
