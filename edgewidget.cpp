@@ -28,3 +28,6 @@ void EdgeWidget::onMouseClickedOnEdge(QMouseEvent* event) {
         emit deleteEdgeRequested(ID);
     }
 }
+
+int EdgeWidget::getID() const {return ID;}
+void EdgeWidget::setID(int ID) {this->ID = ID;}

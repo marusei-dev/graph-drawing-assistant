@@ -19,6 +19,8 @@ public:
     void addEnds(Vertex* startVertex, Vertex* endVertex);
     Vertex* getStartVertex();
     Vertex* getEndVertex();
+    int getID() const;
+    void setID(int ID);
 protected:
     void mousePressEvent(QMouseEvent* event) override;
 signals:
