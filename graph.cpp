@@ -58,11 +58,6 @@ void Graph::addEdge(int ID1, int ID2) {
     edgeSet[edgeSetSize - 1] = Edge(edgeSetSize - 1, &vertexSet[ID1], &vertexSet[ID2]);
     edgeSet[edgeSetSize - 1].setID(edgeSetSize - 1);
     delete[] temp;
-
-    std::cout << "Current state of the edge set:" << std::endl;
-    for (int i = 0; i < edgeSetSize; i++) {
-        std::cout << "Edge with ID = " << edgeSet[i].getID() << std::endl;
-    }
 }
 
 void Graph::deleteEdge(int ID) {
