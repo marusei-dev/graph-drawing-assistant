@@ -28,7 +28,7 @@ void CanvasWidget::onAddNodeRequested(QPoint position) {
     addVertexWindow->resize(250, 40);
     addVertexWindow->setWindowTitle("Add Node");
 
-    QVBoxLayout* addVertexWindowVerticalLayout = new QVBoxLayout(addVertexWindow);
+    addVertexWindowVerticalLayout = new QVBoxLayout(addVertexWindow);
     vertexNameTextField = new QLineEdit(addVertexWindow);
     vertexNameTextField->setPlaceholderText("Enter the name of the node and press Enter");
     addVertexWindowVerticalLayout->addWidget(vertexNameTextField);
@@ -104,13 +104,18 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
     });
 
     QObject::connect(confirmationButton, &QPushButton::clicked, this, [&]() {
-        addUndirectedEdgeWindow->close();
-        int correctedEndVertexIndex = endVertexComboBox->currentIndex();
-        if (endVertexComboBox->currentIndex() >= startVertexComboBox->currentIndex()) {
-            correctedEndVertexIndex++;
+        if (endVertexComboBox->currentIndex() != -1) {
+            addUndirectedEdgeWindow->close();
+            int correctedEndVertexIndex = endVertexComboBox->currentIndex();
+            if (endVertexComboBox->currentIndex() >= startVertexComboBox->currentIndex()) {
+                correctedEndVertexIndex++;
+            }
+            graph.addEdge(startVertexComboBox->currentIndex(), correctedEndVertexIndex);
+            redrawGraph();
         }
-        graph.addEdge(startVertexComboBox->currentIndex(), correctedEndVertexIndex);
-        redrawGraph();
+        else {
+            std::cout << "No end vertex chosen!" << std::endl;
+        }
     });
 }
 

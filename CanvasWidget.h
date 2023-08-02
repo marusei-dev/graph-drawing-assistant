@@ -28,23 +28,36 @@ class CanvasWidget : public QWidget {
     // Graph class variable
     Graph graph;
 
-
+    // Bool flags
     bool addNodeButtonClicked;
     bool deletionModeEnabled;
-    QLineEdit* vertexNameTextField;
-    VertexWidget** vertexWidgetSet;
-    EdgeWidget** edgeWidgetSet;
+
+    // Add Vertex window components
     QWidget* addVertexWindow;
+    QLineEdit* vertexNameTextField;
+    QVBoxLayout* addVertexWindowVerticalLayout;
+
+    // Add Undirected edge window components
     QWidget* addUndirectedEdgeWindow;
     QComboBox* startVertexComboBox;
     QComboBox* endVertexComboBox;
-    int vertexWidgetSetSize;
-    int edgeWidgetSetSize;
-    QPoint savedPosition;
+
+    // Vertex Widget set variables
+    VertexWidget** vertexWidgetSet;
     int vertexRadius;
+    int vertexWidgetSetSize;
+    QPoint savedPosition;
+
+    // Edge Widget set variables
+    EdgeWidget** edgeWidgetSet;
+    int edgeWidgetSetSize;
+
 public:
     CanvasWidget(QWidget* parent = nullptr);
     ~CanvasWidget();
+
+    void createAddVertexWindow();
+
     void redrawGraph();
     int getVertexSetSize() const;
     int getEdgeSetSize() const;
