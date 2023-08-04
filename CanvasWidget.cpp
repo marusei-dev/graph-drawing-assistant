@@ -61,14 +61,14 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
     addUndirectedEdgeWindow->resize(400, 200);
     addUndirectedEdgeWindow->setWindowTitle("Add Undirected Edge");
 \
-    QVBoxLayout* addUndirectedEdgeWindowVerticalLayout = new QVBoxLayout(addUndirectedEdgeWindow);
-    QHBoxLayout* addUndirectedEdgeWindowHorizontalLayout = new QHBoxLayout(addUndirectedEdgeWindow);
+    addUndirectedEdgeWindowVerticalLayout = new QVBoxLayout(addUndirectedEdgeWindow);
+    addUndirectedEdgeWindowHorizontalLayout = new QHBoxLayout(addUndirectedEdgeWindow);
 
     startVertexComboBox = new QComboBox(addUndirectedEdgeWindow);
-    QLabel* connectingText = new QLabel("----------------------------", addUndirectedEdgeWindow);
+    connectingText = new QLabel("----------------------------", addUndirectedEdgeWindow);
     endVertexComboBox = new QComboBox(addUndirectedEdgeWindow);
 
-    QHBoxLayout* connectingTextHorizontalLayout = new QHBoxLayout();
+    connectingTextHorizontalLayout = new QHBoxLayout();
     connectingTextHorizontalLayout->addWidget(connectingText);
     connectingTextHorizontalLayout->setAlignment(Qt::AlignHCenter);
 
@@ -81,7 +81,7 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
     addUndirectedEdgeWindowHorizontalLayout->setStretchFactor(connectingTextHorizontalLayout, 10);
     addUndirectedEdgeWindowHorizontalLayout->setStretchFactor(endVertexComboBox, 10);
 
-    QPushButton* confirmationButton = new QPushButton("Confirm", addUndirectedEdgeWindow);
+    confirmationButton = new QPushButton("Confirm", addUndirectedEdgeWindow);
     addUndirectedEdgeWindowVerticalLayout->addLayout(addUndirectedEdgeWindowHorizontalLayout);
     addUndirectedEdgeWindowVerticalLayout->addWidget(confirmationButton);
 
@@ -106,7 +106,7 @@ void CanvasWidget::onAddUndirectedEdgeButtonClick() {
     QObject::connect(confirmationButton, &QPushButton::clicked, this, [&]() {
         if (endVertexComboBox->currentIndex() != -1) {
             addUndirectedEdgeWindow->close();
-            int correctedEndVertexIndex = endVertexComboBox->currentIndex();
+            correctedEndVertexIndex = endVertexComboBox->currentIndex();
             if (endVertexComboBox->currentIndex() >= startVertexComboBox->currentIndex()) {
                 correctedEndVertexIndex++;
             }
@@ -213,6 +213,13 @@ void CanvasWidget::paintEvent(QPaintEvent* event) {
             painter.drawRect(edgeWidgetSet[i]->pos().x(), edgeWidgetSet[i]->pos().y(), edgeWidgetSet[i]->width(), edgeWidgetSet[i]->height());
         }
     }
+
+    painter.fillRect(rect(), QColor(255, 255, 255));
+
+    QPen borderPen(QColor(100, 100, 100), 5);
+    painter.setPen(borderPen);
+    painter.drawLine(0, 0, 0, height());
+    painter.drawLine(width(), 0, width(), height());
 }
 
 CanvasWidget::~CanvasWidget() {}
@@ -228,7 +235,7 @@ void CanvasWidget::onDeleteEdgeRequested(int ID) {
 }
 
 void CanvasWidget::onSaveGraphAction(bool checked) {
-    QString saveFilePath = QCoreApplication::applicationDirPath() + "/" + "LastGraph.txt";
+    saveFilePath = QCoreApplication::applicationDirPath() + "/" + "LastGraph.txt";
     try {
         std::ofstream saveFile(saveFilePath.toStdString(), std::ios::out);
         if (saveFile.is_open()) {
@@ -269,7 +276,7 @@ std::vector<std::string> splitString(const std::string& str, char delimiter)
 
 void CanvasWidget::onLoadLastGraphAction(bool checked)
 {
-    QString loadFilePath = QCoreApplication::applicationDirPath() + "/" + "LastGraph.txt";
+    loadFilePath = QCoreApplication::applicationDirPath() + "/" + "LastGraph.txt";
     std::ifstream loadFile(loadFilePath.toStdString(), std::ios::in);
     if (loadFile.is_open()) {
         std::cout << "File opened" << std::endl;

@@ -9,9 +9,6 @@ MainWindow::MainWindow(QWidget *parent)
     emit canvasWidget->graphChanged();
 }
 void MainWindow::initialiseGraphicalInterface() {
-    /*
-     * Creating and positioning elements of the GUI at the launch.
-    */
     topMenuBar = new QMenuBar(this);
 
     fileMenu = new QMenu("File", topMenuBar);
@@ -36,14 +33,6 @@ void MainWindow::initialiseGraphicalInterface() {
     dockToolbar->setFeatures(QDockWidget::NoDockWidgetFeatures);
     dockToolbar->setMinimumWidth(150);
     dockToolbar->setMaximumWidth(250);
-    dockToolbar->setStyleSheet("border-right: 3px solid grey");
-
-    dockProperties = new QDockWidget("Properties", this);
-    dockProperties->setAllowedAreas(Qt::RightDockWidgetArea);
-    dockProperties->setFeatures(QDockWidget::NoDockWidgetFeatures);
-    dockProperties->setMinimumWidth(250);
-    dockProperties->setMaximumWidth(300);
-    dockProperties->setStyleSheet("border-left: 3px solid grey");
 
     toolbarWidget = new QWidget(dockToolbar);
     toolbarVerticalLayout = new QVBoxLayout(toolbarWidget);
@@ -54,19 +43,39 @@ void MainWindow::initialiseGraphicalInterface() {
     toolbarVerticalLayout->setAlignment(Qt::AlignTop);
     dockToolbar->setWidget(toolbarWidget);
 
+    dockProperties = new QDockWidget("Properties", this);
+    dockProperties->setAllowedAreas(Qt::RightDockWidgetArea);
+    dockProperties->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    dockProperties->setMinimumWidth(250);
+    dockProperties->setMaximumWidth(300);
+
 
     propertiesWidget = new QWidget(dockProperties);
-
-    vertexNumberTextProperty = new QLabel(propertiesWidget);
-    edgeNumberTextProperty = new QLabel(propertiesWidget);
+    propertiesWidgetLayout = new QVBoxLayout(dockProperties);
 
 
-    propertiesVerticalLayout = new QVBoxLayout(propertiesWidget);
-    propertiesVerticalLayout->addWidget(vertexNumberTextProperty);
-    propertiesVerticalLayout->addWidget(edgeNumberTextProperty);
-    propertiesVerticalLayout->setAlignment(Qt::AlignTop);
+    propertiesTreeWidget = new QTreeWidget(propertiesWidget);
+    propertiesTreeWidget->setStyleSheet("background-color: #F0F0F0; border: 0px");
+    propertiesTreeWidget->setHeaderHidden(true);
+
+    generalCategoryTreeRoot = new QTreeWidgetItem(propertiesTreeWidget, QStringList() << "General");
+    vertexNumberItem = new QTreeWidgetItem(generalCategoryTreeRoot);
+    edgeNumberItem = new QTreeWidgetItem(generalCategoryTreeRoot);
+    vertexNumberItem->setText(0, "Number of Vertices: 0");
+    edgeNumberItem->setText(0, "Number of Edges: 0");
+
+    colouringCategoryTreeRoot = new QTreeWidgetItem(propertiesTreeWidget, QStringList() << "Colouring");
+    vertexChromaticNumberItem = new QTreeWidgetItem(colouringCategoryTreeRoot);
+    edgeChromaticNumberItem = new QTreeWidgetItem(colouringCategoryTreeRoot);
+    vertexChromaticNumberItem->setText(0, "Vertex Chromatic Number: 1");
+    edgeChromaticNumberItem->setText(0, "Edge Chromatic Number: 1");
+
+    propertiesWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    propertiesWidgetLayout->addWidget(propertiesTreeWidget);
+    propertiesWidgetLayout->setContentsMargins(0, 0, 0, 0);
+    propertiesWidgetLayout->setAlignment(Qt::AlignTop);
+
     dockProperties->setWidget(propertiesWidget);
-
 
     addDockWidget(Qt::LeftDockWidgetArea, dockToolbar);
     addDockWidget(Qt::RightDockWidgetArea, dockProperties);
@@ -77,13 +86,13 @@ void MainWindow::initialiseGraphicalInterface() {
     canvasWidget = new CanvasWidget(this);
     canvasWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     canvasWidget->setAutoFillBackground(true);
-    canvasWidget->setPalette(backgroundPalette);
+    //canvasWidget->setPalette(backgroundPalette);
 
-    QHBoxLayout* mainLayout = new QHBoxLayout();
+    mainLayout = new QHBoxLayout();
     mainLayout->addWidget(canvasWidget);
     mainLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
-    QWidget* centralWidget = new QWidget(this);
+    centralWidget = new QWidget(this);
     centralWidget->setLayout(mainLayout);
     setCentralWidget(centralWidget);
 }
@@ -103,12 +112,13 @@ void MainWindow::executeConnections() {
     QObject::connect(addNodeButtonShortcut, &QShortcut::activated, addNodeButton, &QPushButton::click);
     QObject::connect(addUndirectedEdgeButtonShortcut, &QShortcut::activated, addUndirectedEdgeButton, &QPushButton::click);
     QObject::connect(toggleDeletionModeActionShortcut, &QShortcut::activated, toggleDeletionModeAction, &QAction::toggle);
-    QObject::connect(canvasWidget, &CanvasWidget::graphChanged, this, [&]() {
-        vertexNumberText = QString("Number of Vertices: ") + QString::number(canvasWidget->getVertexSetSize());
-        edgeNumberText = QString("Number of Edges: ") + QString::number(canvasWidget->getEdgeSetSize());
+    QObject::connect(canvasWidget, &CanvasWidget::graphChanged, this, &MainWindow::updateProperties);
+}
+void MainWindow::updateProperties() {
+    //vertexNumberText = QString("Number of Vertices: ") + QString::number(canvasWidget->getVertexSetSize());
+    //edgeNumberText = QString("Number of Edges: ") + QString::number(canvasWidget->getEdgeSetSize());
 
-        vertexNumberTextProperty->setText(vertexNumberText);
-        edgeNumberTextProperty->setText(edgeNumberText);
-    });
+    //vertexNumberItem->setText(0, vertexNumberText);
+    //edgeNumberItem->setText(0, edgeNumberText);
 }
 MainWindow::~MainWindow() {}

@@ -41,6 +41,13 @@ class CanvasWidget : public QWidget {
     QWidget* addUndirectedEdgeWindow;
     QComboBox* startVertexComboBox;
     QComboBox* endVertexComboBox;
+    QVBoxLayout* addUndirectedEdgeWindowVerticalLayout;
+    QHBoxLayout* addUndirectedEdgeWindowHorizontalLayout;
+    QLabel* connectingText;
+    QHBoxLayout* connectingTextHorizontalLayout;
+    QPushButton* confirmationButton;
+    int correctedEndVertexIndex;
+
 
     // Vertex Widget set variables
     VertexWidget** vertexWidgetSet;
@@ -51,6 +58,10 @@ class CanvasWidget : public QWidget {
     // Edge Widget set variables
     EdgeWidget** edgeWidgetSet;
     int edgeWidgetSetSize;
+
+    // Save & Load graph actions variables
+    QString saveFilePath;
+    QString loadFilePath;
 
 public:
     CanvasWidget(QWidget* parent = nullptr);

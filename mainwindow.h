@@ -13,6 +13,8 @@
 #include <QHBoxLayout>
 #include <QPalette>
 #include <QShortcut>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 // My classes
 #include "canvaswidget.h"
@@ -29,21 +31,34 @@ class MainWindow : public QMainWindow
     QMenu* fileMenu;
     QMenu* editMenu;
 
-    // Dock widgets and their layouts
+    // Toolbar dock widget variables
     QDockWidget* dockToolbar;
     QWidget* toolbarWidget;
     QVBoxLayout* toolbarVerticalLayout;
 
+    // Properties dock widget variables
     QDockWidget* dockProperties;
     QWidget* propertiesWidget;
-    QVBoxLayout* propertiesVerticalLayout;
+    QVBoxLayout* propertiesWidgetLayout;
+
+    QTreeWidget* propertiesTreeWidget;
+
+    QTreeWidgetItem* generalCategoryTreeRoot;
+    QTreeWidgetItem* vertexNumberItem;
+    QTreeWidgetItem* edgeNumberItem;
+
+    QTreeWidgetItem* colouringCategoryTreeRoot;
+    QTreeWidgetItem* vertexChromaticNumberItem;
+    QTreeWidgetItem* edgeChromaticNumberItem;
 
     // Dock widget buttons
     QPushButton* addNodeButton;
     QPushButton* addUndirectedEdgeButton;
 
-    // CanvasWidget class variable
+    // CanvasWidget class variables
     CanvasWidget* canvasWidget;
+    QHBoxLayout* mainLayout;
+    QWidget* centralWidget;
 
     // Actions for the File menu in the top menu bar
     QAction* saveGraphAction;
@@ -52,9 +67,7 @@ class MainWindow : public QMainWindow
     // Actions for the Edit menu in the top menu bar
     QAction* toggleDeletionModeAction;
 
-    // Variables for displaying data in the properties widget
-    QLabel* vertexNumberTextProperty;
-    QLabel* edgeNumberTextProperty;
+    // Variables for displaying data in the general section of the properties widget
     QString edgeNumberText;
     QString vertexNumberText;
 
@@ -68,6 +81,8 @@ public:
     void initialiseGraphicalInterface();
     void initialiseShortcuts();
     void executeConnections();
+
+    void updateProperties();
     ~MainWindow();
 };
 
